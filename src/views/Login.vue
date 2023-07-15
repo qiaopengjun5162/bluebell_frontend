@@ -22,12 +22,12 @@
 <script lang="ts" setup>
 import { reactive, toRefs, ref } from 'vue'
 import { loginApi } from "../request/api"
-import Cookies from 'js-cookie'
 import { ElMessage } from 'element-plus';
 import { useTokenStore } from "../store"
 
 const store = useTokenStore()
 const router = useRouter()
+const route = useRoute()
 // 定义是否登录加载中
 const isLoading = ref(false)
 
@@ -71,18 +71,14 @@ const loginFn = () => {
             if (res.code === 1000) {
                 console.log('校验通过 登录成功');
                 console.log(res.data)
-                // 先存储 token
-                // js-cookie
-                Cookies.set('token', res.data, { expires: 7 });
-                // localStorage.setItem("loginResult", JSON.stringify(res.data));
-                sessionStorage.setItem("loginResult", JSON.stringify(res.data));
+
                 // 保存token信息
                 store.saveToken(res.data)
 
                 isLoading.value = false
 
                 ElMessage.success("登录成功")
-                router.push("/")
+                router.push((route.query.redirect as string) || "/")
             } else {
                 console.log(res.msg)
                 ElMessage.error('登录信息有误!')

@@ -1,5 +1,6 @@
 import { defineStore } from "pinia"
 import { ElMessage } from 'element-plus';
+import Cookies from 'js-cookie'
 
 // https://pinia.vuejs.org/zh/core-concepts/
 // 在 Setup Store 中：
@@ -29,6 +30,11 @@ export const useTokenStore = defineStore('tokenstore', () => {
     function saveToken(data: string) {
         tokenJson.value = data
         window.localStorage.setItem("loginResult", data)
+        // 先存储 token
+        // js-cookie
+        Cookies.set('token', data, { expires: 7 });
+        // localStorage.setItem("loginResult", JSON.stringify(res.data));
+        sessionStorage.setItem("loginResult", JSON.stringify(data));
     }
 
     // 向外暴露
